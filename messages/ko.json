@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "tagline": "하나의 구독으로 모든 주요 AI 모델을.",
+    "description": "RouterForge는 프리미엄 멀티 모델 AI API 구독 플랫폼입니다. 신뢰할 수 있는 단일 게이트웨이를 통해 OpenAI, Claude, Gemini, 오픈소스 모델에 액세스하세요."
+  },
+  "common": {
+    "signIn": "로그인",
+    "signUp": "회원가입",
+    "signOut": "로그아웃",
+    "getStarted": "시작하기",
+    "learnMore": "더 알아보기",
+    "viewPricing": "요금제 보기",
+    "loading": "로딩 중…",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "search": "검색",
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름"
+  },
+  "nav": {
+    "home": "홈",
+    "pricing": "요금제",
+    "playground": "플레이그라운드",
+    "chat": "채팅",
+    "docs": "문서",
+    "blog": "블로그",
+    "contact": "문의",
+    "dashboard": "대시보드",
+    "billing": "결제",
+    "settings": "설정",
+    "admin": "관리"
+  },
+  "home": {
+    "heroEyebrow": "멀티 모델 AI, 하나로.",
+    "heroTitle": "모든 프론티어 모델로 향하는 하나의 게이트웨이.",
+    "heroSubtitle": "RouterForge는 개발자와 팀에게 OpenAI, Claude, Gemini, 오픈소스 모델에 대한 구독 기반 액세스를 제공합니다. 단일 API, 합리적인 가격, 프리미엄 안정성.",
+    "heroPrimaryCta": "지금 시작하기",
+    "heroSecondaryCta": "요금제 보기"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "tagline": "一次订阅，畅享所有主流 AI 模型。",
+    "description": "RouterForge 是一个高端多模型 AI API 订阅平台。通过单一可靠的网关访问 OpenAI、Claude、Gemini 和开源模型。"
+  },
+  "common": {
+    "signIn": "登录",
+    "signUp": "注册",
+    "signOut": "退出登录",
+    "getStarted": "开始使用",
+    "learnMore": "了解更多",
+    "viewPricing": "查看价格",
+    "contactSales": "联系销售",
+    "loading": "加载中…",
+    "error": "出错了",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "confirm": "确认",
+    "search": "搜索",
+    "active": "激活",
+    "expired": "已过期",
+    "email": "邮箱",
+    "password": "密码",
+    "name": "姓名"
+  },
+  "nav": {
+    "home": "首页",
+    "pricing": "价格",
+    "playground": "调试台",
+    "chat": "聊天",
+    "docs": "文档",
+    "blog": "博客",
+    "contact": "联系我们",
+    "dashboard": "控制台",
+    "billing": "账单",
+    "settings": "设置",
+    "admin": "管理",
+    "status": "状态"
+  },
+  "home": {
+    "heroEyebrow": "多模型 AI，统一接入。",
+    "heroTitle": "一个网关，通往所有前沿模型。",
+    "heroSubtitle": "RouterForge 为开发者和团队提供订阅式访问 OpenAI、Claude、Gemini 和开源模型的能力——统一 API、合理定价、高端可靠性。",
+    "heroPrimaryCta": "开始构建",
+    "heroSecondaryCta": "查看价格"
+  },
+  "pricing": {
+    "title": "简单的按时长计费。",
+    "subtitle": "选择模型家族或套餐。按时长付费，而不是按 token 付费。"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "tagline": "एक सब्सक्रिप्शन। हर प्रमुख AI मॉडल।",
+    "description": "RouterForge एक प्रीमियम मल्टी-मॉडल AI API सब्सक्रिप्शन प्लेटफ़ॉर्म है। एकल विश्वसनीय गेटवे के माध्यम से OpenAI, Claude, Gemini और ओपन-सोर्स मॉडल तक पहुँच।"
+  },
+  "common": {
+    "signIn": "साइन इन",
+    "signUp": "साइन अप",
+    "signOut": "साइन आउट",
+    "getStarted": "शुरू करें",
+    "learnMore": "और जानें",
+    "viewPricing": "मूल्य देखें",
+    "loading": "लोड हो रहा है…",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएँ",
+    "search": "खोजें",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "name": "नाम"
+  },
+  "nav": {
+    "home": "होम",
+    "pricing": "मूल्य",
+    "playground": "प्लेग्राउंड",
+    "chat": "चैट",
+    "docs": "दस्तावेज़",
+    "blog": "ब्लॉग",
+    "contact": "संपर्क",
+    "dashboard": "डैशबोर्ड",
+    "billing": "बिलिंग",
+    "settings": "सेटिंग्स",
+    "admin": "व्यवस्थापक"
+  },
+  "home": {
+    "heroEyebrow": "मल्टी-मॉडल AI, एकीकृत।",
+    "heroTitle": "हर फ्रंटियर मॉडल के लिए एक गेटवे।",
+    "heroSubtitle": "RouterForge डेवलपर्स और टीमों को OpenAI, Claude, Gemini और ओपन-सोर्स मॉडलों तक सब्सक्रिप्शन-आधारित पहुँच देता है — एकल API, उचित मूल्य और प्रीमियम विश्वसनीयता के साथ।",
+    "heroPrimaryCta": "बनाना शुरू करें",
+    "heroSecondaryCta": "मूल्य देखें"
+  }
+}

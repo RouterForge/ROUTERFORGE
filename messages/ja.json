@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "tagline": "ひとつのサブスクで、すべての主要 AI モデルを。",
+    "description": "RouterForge はプレミアムなマルチモデル AI API サブスクリプションプラットフォームです。信頼性の高い単一のゲートウェイから OpenAI、Claude、Gemini、オープンソースモデルにアクセスできます。"
+  },
+  "common": {
+    "signIn": "ログイン",
+    "signUp": "登録",
+    "signOut": "ログアウト",
+    "getStarted": "はじめる",
+    "learnMore": "詳細を見る",
+    "viewPricing": "料金を見る",
+    "loading": "読み込み中…",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "search": "検索",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "name": "名前"
+  },
+  "nav": {
+    "home": "ホーム",
+    "pricing": "料金",
+    "playground": "プレイグラウンド",
+    "chat": "チャット",
+    "docs": "ドキュメント",
+    "blog": "ブログ",
+    "contact": "お問い合わせ",
+    "dashboard": "ダッシュボード",
+    "billing": "請求",
+    "settings": "設定",
+    "admin": "管理"
+  },
+  "home": {
+    "heroEyebrow": "マルチモデル AI を統合。",
+    "heroTitle": "あらゆるフロンティアモデルへの単一ゲートウェイ。",
+    "heroSubtitle": "RouterForge は開発者とチームに、OpenAI、Claude、Gemini、オープンソースモデルへのサブスクリプション型アクセスを提供します。単一の API、公正な価格、プレミアムな信頼性。",
+    "heroPrimaryCta": "構築をはじめる",
+    "heroSecondaryCta": "料金を見る"
+  }
+}

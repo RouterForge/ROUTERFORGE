@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "tagline": "מנוי אחד. כל מודלי ה-AI המובילים.",
+    "description": "RouterForge היא פלטפורמת מנויי API של AI רב-מודלים ברמה פרימיום. גישה ל-OpenAI, Claude, Gemini ולמודלים בקוד פתוח דרך שער אחד אמין."
+  },
+  "common": {
+    "signIn": "התחברות",
+    "signUp": "הרשמה",
+    "signOut": "התנתקות",
+    "getStarted": "התחל",
+    "learnMore": "למידע נוסף",
+    "viewPricing": "צפה במחירים",
+    "loading": "טוען…",
+    "save": "שמור",
+    "cancel": "ביטול",
+    "delete": "מחק",
+    "search": "חיפוש",
+    "email": "דוא\"ל",
+    "password": "סיסמה",
+    "name": "שם"
+  },
+  "nav": {
+    "home": "בית",
+    "pricing": "מחירים",
+    "playground": "Playground",
+    "chat": "צ'אט",
+    "docs": "תיעוד",
+    "blog": "בלוג",
+    "contact": "צור קשר",
+    "dashboard": "לוח בקרה",
+    "billing": "חיוב",
+    "settings": "הגדרות",
+    "admin": "ניהול",
+    "status": "סטטוס"
+  },
+  "home": {
+    "heroEyebrow": "AI רב-מודלים, מאוחד.",
+    "heroTitle": "שער אחד לכל מודל פורץ דרך.",
+    "heroSubtitle": "RouterForge נותן למפתחים ולצוותים גישה מבוססת מנוי ל-OpenAI, Claude, Gemini ולמודלים בקוד פתוח — עם API יחיד, מחירים הוגנים ואמינות פרימיום.",
+    "heroPrimaryCta": "התחל לבנות",
+    "heroSecondaryCta": "צפה במחירים"
+  }
+}

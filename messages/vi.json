@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "tagline": "Một gói đăng ký. Mọi mô hình AI lớn.",
+    "description": "RouterForge là nền tảng đăng ký API AI đa mô hình cao cấp. Truy cập OpenAI, Claude, Gemini và các mô hình mã nguồn mở qua một cổng đáng tin cậy duy nhất."
+  },
+  "common": {
+    "signIn": "Đăng nhập",
+    "signUp": "Đăng ký",
+    "signOut": "Đăng xuất",
+    "getStarted": "Bắt đầu",
+    "learnMore": "Tìm hiểu thêm",
+    "viewPricing": "Xem giá",
+    "contactSales": "Liên hệ bộ phận kinh doanh",
+    "loading": "Đang tải…",
+    "error": "Có lỗi xảy ra",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "confirm": "Xác nhận",
+    "search": "Tìm kiếm",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "name": "Tên"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "pricing": "Giá",
+    "playground": "Playground",
+    "chat": "Trò chuyện",
+    "docs": "Tài liệu",
+    "blog": "Blog",
+    "contact": "Liên hệ",
+    "dashboard": "Bảng điều khiển",
+    "billing": "Thanh toán",
+    "settings": "Cài đặt",
+    "admin": "Quản trị",
+    "status": "Trạng thái"
+  },
+  "home": {
+    "heroEyebrow": "AI đa mô hình, hợp nhất.",
+    "heroTitle": "Một cổng truy cập đến mọi mô hình hàng đầu.",
+    "heroSubtitle": "RouterForge mang đến cho nhà phát triển và đội ngũ quyền truy cập theo gói đăng ký vào OpenAI, Claude, Gemini và các mô hình mã nguồn mở — với một API duy nhất, giá cả hợp lý và độ tin cậy cao cấp.",
+    "heroPrimaryCta": "Bắt đầu xây dựng",
+    "heroSecondaryCta": "Xem giá"
+  }
+}

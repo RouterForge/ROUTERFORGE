@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "tagline": "Satu langganan. Setiap model AI utama.",
+    "description": "RouterForge ialah platform langganan API AI berbilang model premium. Akses OpenAI, Claude, Gemini dan model sumber terbuka melalui satu get laluan yang boleh dipercayai."
+  },
+  "common": {
+    "signIn": "Log masuk",
+    "signUp": "Daftar",
+    "signOut": "Log keluar",
+    "getStarted": "Mulakan",
+    "learnMore": "Ketahui lebih lanjut",
+    "viewPricing": "Lihat harga",
+    "loading": "Memuatkan…",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "search": "Cari",
+    "email": "E-mel",
+    "password": "Kata laluan",
+    "name": "Nama"
+  },
+  "nav": {
+    "home": "Utama",
+    "pricing": "Harga",
+    "playground": "Playground",
+    "chat": "Sembang",
+    "docs": "Dokumentasi",
+    "blog": "Blog",
+    "contact": "Hubungi",
+    "dashboard": "Papan pemuka",
+    "billing": "Pengebilan",
+    "settings": "Tetapan",
+    "admin": "Pentadbir"
+  },
+  "home": {
+    "heroEyebrow": "AI berbilang model, disatukan.",
+    "heroTitle": "Satu get laluan ke setiap model canggih.",
+    "heroSubtitle": "RouterForge memberi pembangun dan pasukan akses berasaskan langganan kepada OpenAI, Claude, Gemini dan model sumber terbuka — dengan satu API, harga saksama dan kebolehpercayaan premium.",
+    "heroPrimaryCta": "Mula membina",
+    "heroSecondaryCta": "Lihat harga"
+  }
+}

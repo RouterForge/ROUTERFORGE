@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "tagline": "یک اشتراک. همه مدل‌های هوش مصنوعی بزرگ.",
+    "description": "RouterForge یک پلتفرم اشتراک API هوش مصنوعی چندمدلی پرمیوم است. از طریق یک گیت‌وی قابل اعتماد به OpenAI، Claude، Gemini و مدل‌های متن‌باز دسترسی پیدا کنید."
+  },
+  "common": {
+    "signIn": "ورود",
+    "signUp": "ثبت‌نام",
+    "signOut": "خروج",
+    "getStarted": "شروع کنید",
+    "learnMore": "اطلاعات بیشتر",
+    "viewPricing": "مشاهده قیمت",
+    "loading": "در حال بارگذاری…",
+    "save": "ذخیره",
+    "cancel": "لغو",
+    "delete": "حذف",
+    "search": "جستجو",
+    "email": "ایمیل",
+    "password": "رمز عبور",
+    "name": "نام"
+  },
+  "nav": {
+    "home": "خانه",
+    "pricing": "قیمت‌گذاری",
+    "playground": "Playground",
+    "chat": "چت",
+    "docs": "مستندات",
+    "blog": "بلاگ",
+    "contact": "تماس",
+    "dashboard": "داشبورد",
+    "billing": "صورتحساب",
+    "settings": "تنظیمات",
+    "admin": "مدیریت",
+    "status": "وضعیت"
+  },
+  "home": {
+    "heroEyebrow": "هوش مصنوعی چندمدلی، یکپارچه.",
+    "heroTitle": "یک گیت‌وی به همه مدل‌های پیشرو.",
+    "heroSubtitle": "RouterForge برای توسعه‌دهندگان و تیم‌ها دسترسی اشتراکی به OpenAI، Claude، Gemini و مدل‌های متن‌باز فراهم می‌کند — با یک API، قیمت‌گذاری منصفانه و قابلیت اطمینان پرمیوم.",
+    "heroPrimaryCta": "شروع به ساختن",
+    "heroSecondaryCta": "مشاهده قیمت"
+  }
+}

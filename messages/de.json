@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "tagline": "Ein Abonnement. Alle großen KI-Modelle.",
+    "description": "RouterForge ist eine Premium-Plattform für Multi-Modell-KI-API-Abonnements. Zugriff auf OpenAI, Claude, Gemini und Open-Source-Modelle über ein einziges, zuverlässiges Gateway."
+  },
+  "common": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "getStarted": "Loslegen",
+    "learnMore": "Mehr erfahren",
+    "viewPricing": "Preise anzeigen",
+    "contactSales": "Vertrieb kontaktieren",
+    "loading": "Wird geladen…",
+    "error": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "search": "Suchen",
+    "active": "Aktiv",
+    "expired": "Abgelaufen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "name": "Name"
+  },
+  "nav": {
+    "home": "Start",
+    "pricing": "Preise",
+    "playground": "Playground",
+    "chat": "Chat",
+    "docs": "Dokumentation",
+    "blog": "Blog",
+    "contact": "Kontakt",
+    "dashboard": "Dashboard",
+    "billing": "Abrechnung",
+    "settings": "Einstellungen",
+    "admin": "Admin",
+    "status": "Status"
+  },
+  "home": {
+    "heroEyebrow": "Multi-Modell-KI, vereinheitlicht.",
+    "heroTitle": "Ein Gateway zu jedem Spitzenmodell.",
+    "heroSubtitle": "RouterForge bietet Entwicklern und Teams abonnementbasierten Zugriff auf OpenAI, Claude, Gemini und Open-Source-Modelle — mit einer einzigen API, fairen Preisen und Premium-Zuverlässigkeit.",
+    "heroPrimaryCta": "Jetzt starten",
+    "heroSecondaryCta": "Preise ansehen"
+  },
+  "pricing": {
+    "title": "Einfache zeitbasierte Preisgestaltung.",
+    "subtitle": "Wählen Sie eine Modellfamilie oder ein Bundle. Zahlen Sie für Zeit, nicht für Tokens."
+  }
+}

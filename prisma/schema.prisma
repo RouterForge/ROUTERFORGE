@@ -1,0 +1,321 @@
+// RouterForge database schema
+// Uses SQLite for local dev; swap `provider` to `postgresql` or `mysql` in
+// production and migrate enum-valued fields back to real enums.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// -----------------------------
+/// Identity
+/// -----------------------------
+
+// Role: USER | ADMIN | SUPER_ADMIN
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String?
+  image           String?
+  hashedPassword  String?
+  emailVerifiedAt DateTime?
+  role            String   @default("USER") // Role enum (string in SQLite)
+  locale          String   @default("en")
+  theme           String   @default("system")
+  twoFactorEnabled Boolean @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions Subscription[]
+  apiKeys       ApiKey[]
+  conversations Conversation[]
+  usageEvents   UsageEvent[]
+  payments      Payment[]
+  adminAudit    AdminAuditLog[]
+  notifications NotificationPreference?
+  tickets       SupportTicket[]
+  abuseFlags    AbuseFlag[]
+  activationCodesRedeemed ActivationCode[] @relation("RedeemedBy")
+  activationCodesIssued   ActivationCode[] @relation("IssuedBy")
+}
+
+model NotificationPreference {
+  id      String @id @default(cuid())
+  userId  String @unique
+  emailUsageAlerts  Boolean @default(true)
+  emailBilling      Boolean @default(true)
+  emailProductNews  Boolean @default(true)
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// -----------------------------
+/// Plans & subscriptions
+/// -----------------------------
+
+model Plan {
+  id              String   @id // e.g. "gpt", "bundle"
+  name            String
+  tagline         String
+  families        String   // JSON array of ModelFamilyId
+  requestsPerDay  Int
+  priceDaily      Float
+  priceWeekly     Float
+  priceMonthly    Float
+  priceYearly     Float
+  badge           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions Subscription[]
+}
+
+// SubscriptionStatus: ACTIVE | EXPIRED | PAUSED | CANCELLED | TRIAL
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String
+  planId      String
+  cycle       String   // daily/weekly/monthly/yearly
+  status      String   @default("ACTIVE")
+  startsAt    DateTime @default(now())
+  endsAt      DateTime
+  renewedAt   DateTime?
+  cancelledAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+  payments Payment[]
+  usageEvents UsageEvent[]
+
+  @@index([userId])
+  @@index([endsAt])
+}
+
+/// -----------------------------
+/// Payments
+/// -----------------------------
+
+// PaymentStatus: PENDING | SUCCEEDED | FAILED | REFUNDED | MANUAL_REVIEW
+// PaymentProvider: POLAR | BINANCE | BYBIT | CRYPTO | MANUAL
+
+model Payment {
+  id         String   @id @default(cuid())
+  userId     String
+  subscriptionId String?
+  provider   String   // PaymentProvider
+  status     String   @default("PENDING")
+  amount     Float
+  currency   String   @default("USD")
+  externalId String?
+  raw        String?  // JSON metadata from provider
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+/// -----------------------------
+/// API keys
+/// -----------------------------
+
+model ApiKey {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  prefix     String
+  hash       String   @unique
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usageEvents UsageEvent[]
+
+  @@index([userId])
+}
+
+/// Activation codes for manual activations / giveaways
+model ActivationCode {
+  id         String   @id @default(cuid())
+  code       String   @unique
+  planId     String?
+  cycle      String?
+  durationDays Int?
+  note       String?
+  redeemedById String?
+  redeemedAt DateTime?
+  expiresAt  DateTime?
+  createdById String
+  createdAt  DateTime @default(now())
+
+  redeemedBy User? @relation("RedeemedBy", fields: [redeemedById], references: [id])
+  createdBy  User  @relation("IssuedBy", fields: [createdById], references: [id])
+
+  @@index([code])
+}
+
+/// -----------------------------
+/// Models / providers
+/// -----------------------------
+
+model Provider {
+  id        String   @id
+  name      String
+  status    String   @default("operational")
+  createdAt DateTime @default(now())
+}
+
+/// -----------------------------
+/// Usage tracking
+/// -----------------------------
+
+model UsageEvent {
+  id             String   @id @default(cuid())
+  userId         String
+  apiKeyId       String?
+  subscriptionId String?
+  modelId        String
+  endpoint       String
+  latencyMs      Int
+  inputTokens    Int
+  outputTokens   Int
+  success        Boolean
+  errorCode      String?
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKey ApiKey? @relation(fields: [apiKeyId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([modelId])
+  @@index([createdAt])
+}
+
+/// -----------------------------
+/// Chat
+/// -----------------------------
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  modelId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  pinnedAt  DateTime?
+
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([userId, updatedAt])
+}
+
+// MessageRole: USER | ASSISTANT | SYSTEM | TOOL
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  tokensIn       Int?
+  tokensOut      Int?
+  modelId        String?
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+/// -----------------------------
+/// Admin & moderation
+/// -----------------------------
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   String?  // JSON
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([actorId, createdAt])
+}
+
+// AbuseSeverity: LOW | MEDIUM | HIGH | CRITICAL
+
+model AbuseFlag {
+  id        String   @id @default(cuid())
+  userId    String
+  severity  String
+  reason    String
+  metadata  String?
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// -----------------------------
+/// Support
+/// -----------------------------
+
+// TicketStatus: OPEN | PENDING | RESOLVED | CLOSED
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  body      String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+/// -----------------------------
+/// Content
+/// -----------------------------
+
+model BlogPost {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  locale     String   @default("en")
+  title      String
+  excerpt    String
+  body       String
+  category   String
+  tags       String   // JSON array
+  heroImage  String?
+  featured   Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([locale, publishedAt])
+}
+
+model Setting {
+  key   String @id
+  value String
+}

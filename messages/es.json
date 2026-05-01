@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "tagline": "Una suscripción. Todos los principales modelos de IA.",
+    "description": "RouterForge es una plataforma premium de suscripción a APIs de IA multi-modelo. Accede a OpenAI, Claude, Gemini y modelos open source a través de una única puerta de enlace fiable."
+  },
+  "common": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar sesión",
+    "getStarted": "Empezar",
+    "learnMore": "Saber más",
+    "viewPricing": "Ver precios",
+    "contactSales": "Contactar con ventas",
+    "loading": "Cargando…",
+    "error": "Algo salió mal",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "active": "Activo",
+    "expired": "Caducado",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "name": "Nombre"
+  },
+  "nav": {
+    "home": "Inicio",
+    "pricing": "Precios",
+    "playground": "Playground",
+    "chat": "Chat",
+    "docs": "Documentación",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "dashboard": "Panel",
+    "billing": "Facturación",
+    "settings": "Ajustes",
+    "admin": "Admin",
+    "status": "Estado"
+  },
+  "home": {
+    "heroEyebrow": "IA multi-modelo, unificada.",
+    "heroTitle": "Una puerta de enlace a todos los modelos frontera.",
+    "heroSubtitle": "RouterForge ofrece a desarrolladores y equipos acceso por suscripción a OpenAI, Claude, Gemini y modelos open source — con una única API, precios justos y fiabilidad premium.",
+    "heroPrimaryCta": "Empieza a construir",
+    "heroSecondaryCta": "Ver precios"
+  },
+  "pricing": {
+    "title": "Precios simples, basados en tiempo.",
+    "subtitle": "Elige una familia de modelos o un bundle. Paga por tiempo, no por tokens."
+  }
+}

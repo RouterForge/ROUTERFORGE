@@ -1,0 +1,360 @@
+{
+  "meta": {
+    "siteName": "RouterForge",
+    "tagline": "One subscription. Every major AI model.",
+    "description": "RouterForge is a premium multi-model AI API subscription platform. Access OpenAI, Claude, Gemini, and open-source models through a single reliable gateway."
+  },
+  "common": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out",
+    "getStarted": "Get started",
+    "learnMore": "Learn more",
+    "viewPricing": "View pricing",
+    "contactSales": "Contact sales",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "copy": "Copy",
+    "copied": "Copied",
+    "all": "All",
+    "status": "Status",
+    "active": "Active",
+    "expired": "Expired",
+    "paused": "Paused",
+    "cancelled": "Cancelled",
+    "yes": "Yes",
+    "no": "No",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "new": "New",
+    "noData": "No data yet"
+  },
+  "nav": {
+    "home": "Home",
+    "pricing": "Pricing",
+    "playground": "Playground",
+    "chat": "Chat",
+    "docs": "Docs",
+    "blog": "Blog",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "billing": "Billing",
+    "settings": "Settings",
+    "admin": "Admin",
+    "status": "Status"
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "resources": "Resources",
+    "legal": "Legal",
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms of Service",
+    "serviceTerms": "Service Terms",
+    "refund": "Refund Policy",
+    "privacy": "Privacy Policy",
+    "security": "Security",
+    "aup": "Acceptable Use",
+    "abuse": "Abuse Policy",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "heroEyebrow": "Multi-model AI, unified.",
+    "heroTitle": "One gateway to every frontier model.",
+    "heroSubtitle": "RouterForge gives developers and teams subscription-based access to OpenAI, Claude, Gemini, and open-source models — with a single API, fair pricing, and premium reliability.",
+    "heroPrimaryCta": "Start building",
+    "heroSecondaryCta": "See pricing",
+    "badges": {
+      "uptime": "99.9% target uptime",
+      "regions": "Global routing",
+      "noVendor": "No vendor lock-in"
+    },
+    "models": {
+      "title": "All the model families you need",
+      "subtitle": "Route to the right model for every task — reasoning, speed, code, or cost.",
+      "openai": "OpenAI / GPT / Codex",
+      "claude": "Anthropic Claude",
+      "gemini": "Google Gemini",
+      "oss": "Open-source models",
+      "future": "And new providers as they launch"
+    },
+    "how": {
+      "title": "How RouterForge works",
+      "steps": {
+        "one": { "title": "Pick a plan", "desc": "Choose a time-based plan per model family, or bundle everything together." },
+        "two": { "title": "Get your key", "desc": "A single API key gives you access to every included model through our router." },
+        "three": { "title": "Ship faster", "desc": "OpenAI-compatible endpoints, streaming, and SDK-friendly responses. Drop it in." }
+      }
+    },
+    "benefits": {
+      "title": "Built for serious teams",
+      "items": {
+        "developers": { "title": "Developer-first", "desc": "OpenAI-compatible schema, streaming, robust SDK examples, typed service layer." },
+        "scale": { "title": "Scales with you", "desc": "From solo hackers to enterprises with dedicated routing, quotas, and audit." },
+        "transparent": { "title": "Transparent pricing", "desc": "Pay for time, not surprise token bills. Compare against provider-direct costs in your dashboard." },
+        "reliable": { "title": "Reliable routing", "desc": "Multi-provider fallback, health-aware routing, and regional redundancy." }
+      }
+    },
+    "trust": {
+      "title": "Security & trust",
+      "subtitle": "Your keys, prompts, and usage are treated as production data.",
+      "items": {
+        "encryption": { "title": "Encrypted in transit & at rest", "desc": "TLS 1.2+ everywhere, encrypted credential vault." },
+        "privacy": { "title": "Privacy-respecting", "desc": "Opt-out telemetry, no training on your data, clear retention controls." },
+        "audit": { "title": "Full audit trail", "desc": "Every admin action, key issuance, and sensitive lookup is logged." },
+        "compliance": { "title": "Compliance-ready", "desc": "Architected for SOC 2 / ISO 27001 style controls from day one." }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": [
+        { "q": "How is RouterForge priced?", "a": "We sell time-based plans per model family, plus bundles. You pay a predictable subscription and we handle provider costs behind the scenes." },
+        { "q": "Which models can I use?", "a": "Plans include OpenAI / Codex, Anthropic Claude, Google Gemini, and curated open-source models. New providers are added via our modular adapter layer." },
+        { "q": "Is the API OpenAI-compatible?", "a": "Yes. Our gateway exposes an OpenAI-compatible schema so most SDKs and tools work out of the box." },
+        { "q": "Do you train on my prompts?", "a": "No. Your prompt and completion data is never used to train models. Retention is configurable in Settings." },
+        { "q": "Can I cancel anytime?", "a": "Yes. Subscriptions are time-based. Your access stays active until the paid period ends — no surprise charges." },
+        { "q": "What payment methods are supported?", "a": "Debit / credit cards via Polar.sh, Binance Pay, Bybit Pay, and direct crypto payments." }
+      ]
+    },
+    "cta": {
+      "title": "Ready to ship with every model?",
+      "subtitle": "Create an account and get a working API key in under two minutes.",
+      "primary": "Create free account",
+      "secondary": "Talk to us"
+    }
+  },
+  "pricing": {
+    "title": "Simple, time-based pricing.",
+    "subtitle": "Pick a model family or a bundle. Pay for time, not tokens.",
+    "billingToggle": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "bestValue": "Best value",
+    "popular": "Most popular",
+    "includes": "Includes",
+    "cta": "Choose plan",
+    "compareTitle": "Compare plans",
+    "feature": "Feature",
+    "families": {
+      "oss": "Open Source",
+      "gemini": "Gemini",
+      "gpt": "GPT / Codex",
+      "claude": "Claude",
+      "bundle": "Bundle (All models)"
+    },
+    "routing": {
+      "title": "Smart routing presets",
+      "fastest": "Fastest",
+      "bestReasoning": "Best reasoning",
+      "bestValue": "Best value"
+    },
+    "paymentMethods": "Accepted payment methods",
+    "per": {
+      "daily": "/ day",
+      "weekly": "/ week",
+      "monthly": "/ month",
+      "yearly": "/ year"
+    },
+    "savings": "Save {pct}%"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}.",
+    "currentPlan": "Current plan",
+    "timeRemaining": "Time remaining",
+    "usageOverview": "Usage overview",
+    "savingsTitle": "Estimated savings vs. direct",
+    "savingsSubtitle": "Compared to paying providers directly for the same usage.",
+    "requests": "Requests",
+    "tokens": "Tokens",
+    "inputTokens": "Input tokens",
+    "outputTokens": "Output tokens",
+    "rpm": "Avg RPM",
+    "rpt": "Avg RPT",
+    "rpd": "Avg RPD",
+    "requestsOverTime": "Requests over time",
+    "modelDistribution": "Model distribution",
+    "recentActivity": "Recent activity",
+    "exportCsv": "Export CSV",
+    "exportJson": "Export JSON",
+    "usageAlerts": "Usage alerts",
+    "noAlerts": "No anomalies detected.",
+    "endsOn": "Ends on {date}",
+    "ranges": {
+      "hour": "Hour",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    }
+  },
+  "playground": {
+    "title": "Playground",
+    "subtitle": "Test any model in seconds.",
+    "model": "Model",
+    "systemPrompt": "System prompt",
+    "userPrompt": "User prompt",
+    "temperature": "Temperature",
+    "topP": "Top P",
+    "maxTokens": "Max tokens",
+    "streaming": "Stream response",
+    "run": "Run",
+    "running": "Running…",
+    "stop": "Stop",
+    "snippets": "Code snippets",
+    "response": "Response",
+    "tokens": "Tokens",
+    "latency": "Latency",
+    "presets": "Presets",
+    "savePreset": "Save preset",
+    "compareMode": "Compare models",
+    "placeholder": "Ask anything…"
+  },
+  "chat": {
+    "title": "Chat",
+    "newChat": "New chat",
+    "searchConversations": "Search conversations",
+    "noConversations": "No conversations yet",
+    "messagePlaceholder": "Message RouterForge…",
+    "send": "Send",
+    "regenerate": "Regenerate",
+    "suggestions": {
+      "one": "Summarize this article for me",
+      "two": "Write a cover letter for a senior backend role",
+      "three": "Debug this TypeScript error",
+      "four": "Plan a 7-day trip to Kyoto"
+    },
+    "rename": "Rename",
+    "delete": "Delete",
+    "exportMd": "Export as Markdown",
+    "exportJson": "Export as JSON"
+  },
+  "auth": {
+    "signInTitle": "Welcome back",
+    "signInSubtitle": "Sign in to your RouterForge account.",
+    "signUpTitle": "Create your account",
+    "signUpSubtitle": "Start using every frontier model in minutes.",
+    "emailLabel": "Work email",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "forgot": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "resetTitle": "Reset password",
+    "resetSubtitle": "We'll email you a reset link.",
+    "continue": "Continue",
+    "orSocial": "Or continue with",
+    "termsAgreement": "By continuing you agree to our Terms of Service and Privacy Policy."
+  },
+  "billing": {
+    "title": "Billing",
+    "paymentMethod": "Payment method",
+    "plan": "Plan",
+    "invoices": "Invoices",
+    "redeemTitle": "Redeem activation code",
+    "redeemPlaceholder": "Enter code",
+    "redeem": "Redeem",
+    "subscriptions": "Subscriptions",
+    "upgrade": "Upgrade",
+    "changePlan": "Change plan",
+    "cancelPlan": "Cancel plan",
+    "active": "Active",
+    "expiresOn": "Expires on {date}"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "security": "Security",
+    "apiKeys": "API keys",
+    "preferences": "Preferences",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": "Theme",
+    "themes": { "system": "System", "light": "Light", "dark": "Dark" },
+    "deleteAccount": "Delete account",
+    "newKey": "Create new key",
+    "keyName": "Key name",
+    "revoke": "Revoke"
+  },
+  "admin": {
+    "title": "Admin",
+    "overview": "Overview",
+    "users": "Users",
+    "subscriptions": "Subscriptions",
+    "payments": "Payments",
+    "keys": "Activation keys",
+    "providers": "Providers",
+    "logs": "Audit logs",
+    "abuse": "Abuse signals",
+    "tickets": "Support tickets",
+    "system": "System health",
+    "totalUsers": "Total users",
+    "activeSubs": "Active subscriptions",
+    "revenue": "Revenue",
+    "requests": "Requests",
+    "tokensUsed": "Tokens used",
+    "topModels": "Top models",
+    "suspicious": "Suspicious users",
+    "generateKey": "Generate key",
+    "exportCsv": "Export CSV",
+    "searchUsers": "Search users by email, id, key…",
+    "dangerConfirm": "This action cannot be undone.",
+    "confirm": "Type CONFIRM to proceed"
+  },
+  "blog": {
+    "title": "RouterForge Blog",
+    "subtitle": "Engineering notes, product updates, and model reviews.",
+    "readMore": "Read more",
+    "categories": "Categories",
+    "tags": "Tags",
+    "featured": "Featured"
+  },
+  "status": {
+    "title": "System status",
+    "operational": "All systems operational",
+    "degraded": "Degraded performance",
+    "outage": "Major outage",
+    "components": "Components"
+  },
+  "legal": {
+    "terms": "Terms of Service",
+    "serviceTerms": "Service Terms",
+    "refund": "Refund Policy",
+    "privacy": "Privacy Policy",
+    "security": "Security Policy",
+    "aup": "Acceptable Use Policy",
+    "abuse": "Abuse Policy",
+    "lastUpdated": "Last updated",
+    "placeholderNotice": "This document is a shell. Replace with reviewed legal content before production launch."
+  },
+  "contact": {
+    "title": "Contact us",
+    "subtitle": "We'd love to hear from you.",
+    "nameLabel": "Your name",
+    "emailLabel": "Your email",
+    "subjectLabel": "Subject",
+    "messageLabel": "Message",
+    "send": "Send message",
+    "sent": "Message sent"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "The page you’re looking for doesn’t exist.",
+    "cta": "Back to home"
+  }
+}

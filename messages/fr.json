@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "tagline": "Un abonnement. Tous les grands modèles d'IA.",
+    "description": "RouterForge est une plateforme d'abonnement API multi-modèles premium. Accédez à OpenAI, Claude, Gemini et aux modèles open source via une seule passerelle fiable."
+  },
+  "common": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se déconnecter",
+    "getStarted": "Commencer",
+    "learnMore": "En savoir plus",
+    "viewPricing": "Voir les tarifs",
+    "contactSales": "Contacter l'équipe commerciale",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "copy": "Copier",
+    "copied": "Copié",
+    "all": "Tout",
+    "status": "État",
+    "active": "Actif",
+    "expired": "Expiré",
+    "paused": "En pause",
+    "cancelled": "Annulé",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "name": "Nom"
+  },
+  "nav": {
+    "home": "Accueil",
+    "pricing": "Tarifs",
+    "playground": "Terrain de jeu",
+    "chat": "Discussion",
+    "docs": "Documentation",
+    "blog": "Blog",
+    "contact": "Contact",
+    "dashboard": "Tableau de bord",
+    "billing": "Facturation",
+    "settings": "Paramètres",
+    "admin": "Admin",
+    "status": "Statut"
+  },
+  "home": {
+    "heroEyebrow": "IA multi-modèles, unifiée.",
+    "heroTitle": "Une passerelle vers tous les modèles de pointe.",
+    "heroSubtitle": "RouterForge offre aux développeurs et aux équipes un accès par abonnement à OpenAI, Claude, Gemini et aux modèles open source — avec une API unique, des tarifs équitables et une fiabilité premium.",
+    "heroPrimaryCta": "Commencer à construire",
+    "heroSecondaryCta": "Voir les tarifs"
+  },
+  "pricing": {
+    "title": "Tarification simple, basée sur le temps.",
+    "subtitle": "Choisissez une famille de modèles ou un bundle. Payez pour le temps, pas pour les tokens."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "tagline": "Одна подписка. Все ведущие AI-модели.",
+    "description": "RouterForge — премиальная платформа подписки на API нескольких AI-моделей. Доступ к OpenAI, Claude, Gemini и open source моделям через единый надёжный шлюз."
+  },
+  "common": {
+    "signIn": "Войти",
+    "signUp": "Регистрация",
+    "signOut": "Выйти",
+    "getStarted": "Начать",
+    "learnMore": "Подробнее",
+    "viewPricing": "Посмотреть цены",
+    "contactSales": "Связаться с отделом продаж",
+    "loading": "Загрузка…",
+    "error": "Что-то пошло не так",
+    "retry": "Повторить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "confirm": "Подтвердить",
+    "search": "Поиск",
+    "active": "Активен",
+    "expired": "Истёк",
+    "email": "Email",
+    "password": "Пароль",
+    "name": "Имя"
+  },
+  "nav": {
+    "home": "Главная",
+    "pricing": "Тарифы",
+    "playground": "Playground",
+    "chat": "Чат",
+    "docs": "Документация",
+    "blog": "Блог",
+    "contact": "Контакты",
+    "dashboard": "Панель",
+    "billing": "Оплата",
+    "settings": "Настройки",
+    "admin": "Админ",
+    "status": "Статус"
+  },
+  "home": {
+    "heroEyebrow": "Мульти-модель AI, объединённая.",
+    "heroTitle": "Один шлюз ко всем передовым моделям.",
+    "heroSubtitle": "RouterForge предоставляет разработчикам и командам доступ по подписке к OpenAI, Claude, Gemini и open source моделям — единый API, справедливые цены и премиальная надёжность.",
+    "heroPrimaryCta": "Начать разработку",
+    "heroSecondaryCta": "Посмотреть цены"
+  },
+  "pricing": {
+    "title": "Простые тарифы на время.",
+    "subtitle": "Выберите семейство моделей или бандл. Платите за время, а не за токены."
+  }
+}
