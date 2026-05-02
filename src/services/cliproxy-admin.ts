@@ -254,7 +254,8 @@ class CliProxyAdmin {
     }
   }
 
-  oauthUrl(
+  /** Legacy: direct URL to the management auth endpoint (returns JSON). */
+  oauthEndpoint(
     provider: 'anthropic' | 'codex' | 'gemini-cli' | 'antigravity' | 'kimi',
   ): string | null {
     if (!configured()) return null;
@@ -268,6 +269,83 @@ class CliProxyAdmin {
     const path = map[provider];
     if (!path) return null;
     return `${BASE_URL}${path}`;
+  }
+
+  /**
+   * Fetch the provider's hosted OAuth URL from CLIProxyAPI. The admin page
+   * opens this URL in a new tab so the super-admin can complete the OAuth
+   * flow; when the provider redirects back to CLIProxyAPI, an auth file is
+   * written and `listAuthFiles()` will pick it up on the next refresh.
+   */
+  async startOAuth(
+    provider: 'anthropic' | 'codex' | 'gemini-cli' | 'antigravity' | 'kimi',
+  ): Promise<string | null> {
+    if (!configured()) return null;
+    const endpoint = this.oauthEndpoint(provider);
+    if (!endpoint) return null;
+    try {
+      const res = await fetch(endpoint, {
+        headers: ADMIN_TOKEN ? { Authorization: `Bearer ${ADMIN_TOKEN}` } : {},
+        cache: 'no-store',
+      });
+      if (!res.ok) return null;
+      const data = (await res.json()) as { url?: string; authUrl?: string };
+      return data.url ?? data.authUrl ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Remove an OAuth-backed auth file from CLIProxyAPI. */
+  async removeAuthFile(name: string): Promise<boolean> {
+    if (!configured()) return false;
+    try {
+      await call('DELETE', '/auth-files', { body: { name } });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Add a direct upstream provider key (Gemini / Claude / Codex / Vertex). */
+  async addUpstreamKey(
+    provider: 'gemini' | 'claude' | 'codex' | 'vertex',
+    key: string,
+    label?: string,
+  ): Promise<boolean> {
+    if (!configured()) return false;
+    const path = provider === 'vertex' ? '/vertex-api-key' : `/${provider}-api-key`;
+    try {
+      await call('PATCH', path, { body: { key, name: label } });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async removeUpstreamKey(
+    provider: 'gemini' | 'claude' | 'codex' | 'vertex',
+    key: string,
+  ): Promise<boolean> {
+    if (!configured()) return false;
+    const path = provider === 'vertex' ? '/vertex-api-key' : `/${provider}-api-key`;
+    try {
+      await call('DELETE', path, { body: { key } });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Update the forced model prefix (empty string clears it). */
+  async setForceModelPrefix(prefix: string): Promise<boolean> {
+    if (!configured()) return false;
+    try {
+      await call('PUT', '/force-model-prefix', { body: { prefix } });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /* ----- Usage ----------------------------------------------------- */
