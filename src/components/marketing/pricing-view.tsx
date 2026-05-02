@@ -152,7 +152,7 @@ export function PricingView() {
       {/* Hero price display */}
       <HeroPrice plan={selectedPlan} period={period} />
 
-      {/* Models included */}
+      {/* Models included + checkout */}
       <Card className="mt-6 p-6">
         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
           Models included
@@ -165,24 +165,53 @@ export function PricingView() {
             </li>
           ))}
         </ul>
-        <div className="mt-5 flex flex-wrap gap-2">
-          <Button
-            asChild
-            size="lg"
-            className="text-white"
-            style={{
-              background: `linear-gradient(135deg, ${selectedPlan.color}, ${selectedPlan.color}cc)`,
-              boxShadow: `0 10px 30px -10px ${selectedPlan.color}99`,
-            }}
-          >
-            <Link href={`/sign-up?plan=${selectedPlan.id}&period=${period.id}`}>
-              Start {selectedPlan.name} · {formatCurrency(priceFor(selectedPlan, period))}
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link href="/contact">Talk to sales</Link>
-          </Button>
+
+        <div className="mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+          Checkout method
         </div>
+        <form
+          method="post"
+          action="/api/billing/checkout"
+          className="grid gap-2 sm:grid-cols-4"
+        >
+          <input type="hidden" name="planId" value={selectedPlan.id} />
+          <input type="hidden" name="periodId" value={period.id} />
+          {(['card', 'binance', 'bybit', 'crypto'] as const).map((m) => (
+            <label
+              key={m}
+              className={cn(
+                'flex items-center gap-2 rounded-lg border border-border/60 p-3 text-sm cursor-pointer hover:bg-accent transition-colors',
+              )}
+            >
+              <input
+                type="radio"
+                name="method"
+                value={m}
+                defaultChecked={m === 'card'}
+                className="accent-primary"
+              />
+              <PaymentIcon id={m} />
+              <span className="font-medium capitalize">{methodLabel(m)}</span>
+            </label>
+          ))}
+
+          <div className="sm:col-span-4 mt-2 flex flex-wrap gap-2">
+            <Button
+              type="submit"
+              size="lg"
+              className="text-white"
+              style={{
+                background: `linear-gradient(135deg, ${selectedPlan.color}, ${selectedPlan.color}cc)`,
+                boxShadow: `0 10px 30px -10px ${selectedPlan.color}99`,
+              }}
+            >
+              Pay {formatCurrency(priceFor(selectedPlan, period))} · {selectedPlan.name}
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/contact">Talk to sales</Link>
+            </Button>
+          </div>
+        </form>
       </Card>
 
       {/* Smart routing mini row */}
@@ -271,11 +300,16 @@ export function PricingView() {
                     </td>
                     <td className="px-4 py-4 text-end">
                       <Button
-                        asChild
                         size="sm"
                         variant={selectedId === p.id ? 'gradient' : 'outline'}
+                        onClick={() => {
+                          setSelectedId(p.id);
+                          if (typeof window !== 'undefined') {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
+                        }}
                       >
-                        <Link href={`/sign-up?plan=${p.id}&period=${period.id}`}>Choose</Link>
+                        Choose
                       </Button>
                     </td>
                   </tr>
@@ -371,5 +405,18 @@ function PaymentIcon({ id }: { id: string }) {
       return <Bitcoin className="h-4 w-4 text-amber-500" />;
     default:
       return null;
+  }
+}
+
+function methodLabel(id: 'card' | 'binance' | 'bybit' | 'crypto'): string {
+  switch (id) {
+    case 'card':
+      return 'Card';
+    case 'binance':
+      return 'Binance';
+    case 'bybit':
+      return 'Bybit';
+    case 'crypto':
+      return 'Crypto';
   }
 }
