@@ -169,34 +169,50 @@ export default async function HomePage({ params }: Props) {
 
       {/* PRICING PREVIEW */}
       <section className="container-page py-16 sm:py-24">
-        <SectionHeading title="Pricing preview" subtitle={t('heroSubtitle')} />
+        <SectionHeading
+          title="Simple, transparent pricing"
+          subtitle="From $4.99/month. Pay only for what you need. Cancel anytime."
+        />
         <div className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-5">
           {PLANS.map((p) => (
             <Card
               key={p.id}
               className={cn(
-                'p-6 relative flex flex-col',
-                p.badge === 'best-value' && 'border-primary',
+                'p-6 relative flex flex-col transition-all hover:-translate-y-0.5 hover:shadow-lg',
+                p.badge === 'Best Value' && 'border-primary',
               )}
+              style={
+                p.badge === 'Best Value'
+                  ? { boxShadow: `0 10px 40px -16px ${p.color}55` }
+                  : undefined
+              }
             >
               {p.badge && (
-                <div className="absolute -top-3 right-6">
-                  <Badge variant={p.badge === 'best-value' ? 'gradient' : 'default'}>
-                    {p.badge === 'best-value' ? 'Best value' : 'Popular'}
-                  </Badge>
-                </div>
+                <span
+                  className="absolute -top-2 right-4 text-[10px] font-semibold tracking-wider uppercase rounded-full px-2 py-0.5 text-black"
+                  style={{ background: p.color }}
+                >
+                  {p.badge}
+                </span>
               )}
-              <div className="font-semibold">{p.name}</div>
-              <p className="mt-1 text-xs text-muted-foreground">{p.tagline}</p>
-              <div className="mt-4 text-3xl font-bold">
-                ${p.prices.monthly}
-                <span className="text-sm font-normal text-muted-foreground">/mo</span>
+              <div className="font-semibold" style={{ color: p.color }}>
+                {p.name}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{p.subtitle}</p>
+              <div className="mt-4">
+                <span className="text-3xl font-bold tabular-nums">${p.baseMonth}</span>
+                <span className="ms-1 text-sm font-normal text-muted-foreground">/mo</span>
               </div>
               <Button asChild variant="outline" className="mt-4">
                 <Link href={`/pricing?plan=${p.id}`}>{tc('viewPricing')}</Link>
               </Button>
             </Card>
           ))}
+        </div>
+        <div className="mt-6 text-center">
+          <Button asChild variant="gradient">
+            <Link href="/pricing">See all plans and billing periods</Link>
+          </Button>
         </div>
       </section>
 

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Link, useRouter } from '@/i18n/navigation';
@@ -14,6 +15,8 @@ export function SignInForm() {
   const t = useTranslations('auth');
   const tc = useTranslations('common');
   const router = useRouter();
+  const params = useSearchParams();
+  const next = sanitizeNext(params.get('next'));
   const [busy, setBusy] = React.useState(false);
 
   return (
@@ -33,7 +36,7 @@ export function SignInForm() {
         setBusy(false);
         if (res.ok) {
           toast.success('Welcome back');
-          router.push('/dashboard');
+          router.push(next as any);
         } else {
           const data = await res.json().catch(() => ({}));
           toast.error(data?.error ?? 'Could not sign in');
@@ -79,4 +82,11 @@ export function SignInForm() {
       <p className="text-xs text-center text-muted-foreground">{t('termsAgreement')}</p>
     </form>
   );
+}
+
+function sanitizeNext(v: string | null): string {
+  if (!v) return '/dashboard';
+  if (!v.startsWith('/')) return '/dashboard';
+  if (v.startsWith('//')) return '/dashboard';
+  return v;
 }

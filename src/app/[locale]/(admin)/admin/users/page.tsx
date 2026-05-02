@@ -1,92 +1,122 @@
 import { setRequestLocale } from 'next-intl/server';
-import { Card } from '@/components/ui/card';
+import { Search, Download, Ban, ShieldCheck } from 'lucide-react';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Download, Ban } from 'lucide-react';
-
-const sample = Array.from({ length: 16 }).map((_, i) => ({
-  id: `usr_${(1000 + i).toString(36)}`,
-  email: `user${i + 1}@routerforge.example`,
-  plan: ['Open Source', 'Gemini', 'GPT', 'Claude', 'Bundle'][i % 5],
-  status: ['Active', 'Active', 'Expired', 'Active', 'Paused'][i % 5],
-  rpm: 12 + ((i * 7) % 80),
-  rpd: 200 + ((i * 99) % 4000),
-  joined: new Date(Date.now() - i * 86400_000).toISOString().slice(0, 10),
-}));
+import {
+  AdminPageHeader,
+  AdminCard,
+  AdminTable,
+  Th,
+  Td,
+  Tr,
+} from '@/components/admin/admin-page';
+import { listAdminUsers } from '@/services/admin-users';
+import { formatDate, formatNumber } from '@/lib/utils';
 
 export default async function AdminUsersPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
   const { locale } = await params;
+  const { q } = await searchParams;
   setRequestLocale(locale);
-  return (
-    <div className="space-y-6">
-      <div className="flex items-end justify-between gap-3 flex-wrap">
-        <h1 className="font-display text-3xl font-bold tracking-tight">Users</h1>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-            <Input
-              placeholder="Search by email, id, key, plan…"
-              className="pl-9 bg-zinc-900 border-zinc-800 text-zinc-100 w-80"
-            />
-          </div>
-          <Button variant="outline">
-            <Download className="h-4 w-4" /> Export CSV
-          </Button>
-        </div>
-      </div>
 
-      <Card className="overflow-hidden bg-zinc-900/40 border-zinc-800">
-        <table className="w-full text-sm">
-          <thead className="bg-zinc-800/40 text-zinc-400">
-            <tr className="text-left">
-              <th className="px-4 py-3 font-medium">User</th>
-              <th className="px-4 py-3 font-medium">Plan</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">RPM</th>
-              <th className="px-4 py-3 font-medium">RPD</th>
-              <th className="px-4 py-3 font-medium">Joined</th>
-              <th className="px-4 py-3 font-medium" />
-            </tr>
-          </thead>
-          <tbody>
-            {sample.map((u) => (
-              <tr key={u.id} className="border-t border-zinc-800">
-                <td className="px-4 py-3">
-                  <div className="font-medium">{u.email}</div>
-                  <div className="text-xs text-zinc-400 font-mono">{u.id}</div>
-                </td>
-                <td className="px-4 py-3">{u.plan}</td>
-                <td className="px-4 py-3">
-                  <Badge
-                    variant={
-                      u.status === 'Active'
-                        ? 'success'
-                        : u.status === 'Paused'
+  const rows = await listAdminUsers(q ?? '');
+
+  return (
+    <div>
+      <AdminPageHeader
+        title="Users"
+        description="Search by email, id, or subscription. Data comes from the database; falls back to sample rows when empty."
+        actions={
+          <>
+            <form className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                name="q"
+                defaultValue={q ?? ''}
+                placeholder="Search users…"
+                className="pl-9 w-72"
+              />
+            </form>
+            <Button variant="outline">
+              <Download className="h-4 w-4" /> Export CSV
+            </Button>
+          </>
+        }
+      />
+
+      <AdminCard className="overflow-hidden">
+        <AdminTable
+          head={
+            <>
+              <Th>User</Th>
+              <Th>Role</Th>
+              <Th>Plan</Th>
+              <Th>Status</Th>
+              <Th>Requests (30d)</Th>
+              <Th>Joined</Th>
+              <Th />
+            </>
+          }
+        >
+          {rows.map((u) => (
+            <Tr key={u.id}>
+              <Td>
+                <div className="font-medium">{u.email}</div>
+                <div className="text-xs text-muted-foreground font-mono">{u.id}</div>
+              </Td>
+              <Td>
+                <Badge
+                  variant={
+                    u.role === 'SUPER_ADMIN'
+                      ? 'gradient'
+                      : u.role === 'ADMIN'
+                        ? 'destructive'
+                        : 'soft'
+                  }
+                >
+                  {u.role}
+                </Badge>
+              </Td>
+              <Td>{u.plan}</Td>
+              <Td>
+                <Badge
+                  variant={
+                    u.status === 'ACTIVE'
+                      ? 'success'
+                      : u.status === 'PAUSED'
                         ? 'warning'
-                        : 'destructive'
-                    }
-                  >
-                    {u.status}
-                  </Badge>
-                </td>
-                <td className="px-4 py-3 tabular-nums">{u.rpm}</td>
-                <td className="px-4 py-3 tabular-nums">{u.rpd}</td>
-                <td className="px-4 py-3 text-zinc-400">{u.joined}</td>
-                <td className="px-4 py-3 text-end">
+                        : u.status === 'EXPIRED'
+                          ? 'destructive'
+                          : 'soft'
+                  }
+                >
+                  {u.status}
+                </Badge>
+              </Td>
+              <Td className="tabular-nums">{formatNumber(u.requests30d, locale)}</Td>
+              <Td className="text-muted-foreground">{formatDate(u.createdAt, locale)}</Td>
+              <Td className="text-end">
+                {u.role === 'USER' ? (
                   <Button variant="ghost" size="sm">
                     <Ban className="h-4 w-4" /> Suspend
                   </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+                ) : (
+                  <Button variant="ghost" size="sm">
+                    <ShieldCheck className="h-4 w-4" /> Audit
+                  </Button>
+                )}
+              </Td>
+            </Tr>
+          ))}
+        </AdminTable>
+      </AdminCard>
     </div>
   );
 }

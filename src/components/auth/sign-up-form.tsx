@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { useRouter } from '@/i18n/navigation';
@@ -9,10 +10,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+function sanitizeNext(v: string | null): string {
+  if (!v || !v.startsWith('/') || v.startsWith('//')) return '/dashboard';
+  return v;
+}
+
 export function SignUpForm() {
   const t = useTranslations('auth');
   const tc = useTranslations('common');
   const router = useRouter();
+  const params = useSearchParams();
+  const next = sanitizeNext(params.get('next'));
   const [busy, setBusy] = React.useState(false);
 
   return (
@@ -33,7 +41,7 @@ export function SignUpForm() {
         setBusy(false);
         if (res.ok) {
           toast.success('Account created. Welcome!');
-          router.push('/dashboard');
+          router.push(next as any);
         } else {
           const data = await res.json().catch(() => ({}));
           toast.error(data?.error ?? 'Could not create account');

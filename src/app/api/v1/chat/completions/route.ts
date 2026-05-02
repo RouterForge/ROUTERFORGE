@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { routeFor } from '@/lib/providers';
+import { authenticateApiKey } from '@/services/api-keys';
+import { getActiveSubscriptionId, recordUsage } from '@/services/usage';
 
 export const runtime = 'nodejs';
 
 /**
  * OpenAI-compatible chat completions endpoint.
  *
- * In production:
- *   - Authenticate using the `Authorization: Bearer rf_...` header against ApiKey.
- *   - Enforce per-key/plan rate limits.
- *   - Persist a UsageEvent row.
+ * Authenticates via the `Authorization: Bearer rf_live_…` header, routes through
+ * the CLIProxyAPI Plus adapter, and records a UsageEvent row for analytics.
  */
 const schema = z.object({
   model: z.string(),
@@ -30,11 +30,21 @@ const schema = z.object({
   user: z.string().optional(),
 });
 
+function approxTokenCount(text: string): number {
+  return Math.max(1, Math.ceil(text.length / 4));
+}
+
 export async function POST(req: Request) {
   const auth = req.headers.get('authorization');
-  if (!auth || !auth.toLowerCase().startsWith('bearer ')) {
+  const identity = await authenticateApiKey(auth);
+  if (!identity) {
     return NextResponse.json(
-      { error: { type: 'invalid_request_error', message: 'Missing API key' } },
+      {
+        error: {
+          type: 'invalid_request_error',
+          message: 'Missing or invalid API key. Expected "Authorization: Bearer rf_live_…".',
+        },
+      },
       { status: 401 },
     );
   }
@@ -49,8 +59,10 @@ export async function POST(req: Request) {
     );
   }
 
+  const subscriptionId = await getActiveSubscriptionId(identity.userId);
+
   const provider = routeFor(payload.model);
-  const req_ = {
+  const chatReq = {
     modelId: payload.model,
     messages: payload.messages,
     temperature: payload.temperature,
@@ -59,27 +71,60 @@ export async function POST(req: Request) {
     user: payload.user,
     stream: payload.stream ?? false,
   };
+  const start = Date.now();
 
   if (!payload.stream) {
-    const res = await provider.chat(req_);
-    return NextResponse.json({
-      id: res.id,
-      object: 'chat.completion',
-      created: Math.floor(Date.now() / 1000),
-      model: res.model,
-      choices: res.choices.map((c) => ({
-        index: c.index,
-        message: c.message,
-        finish_reason: c.finishReason ?? 'stop',
-      })),
-      usage: {
-        prompt_tokens: res.usage.promptTokens,
-        completion_tokens: res.usage.completionTokens,
-        total_tokens: res.usage.totalTokens,
-      },
-    });
+    try {
+      const res = await provider.chat(chatReq);
+      await recordUsage({
+        userId: identity.userId,
+        apiKeyId: identity.apiKeyId,
+        subscriptionId,
+        modelId: res.model,
+        endpoint: '/v1/chat/completions',
+        latencyMs: res.latencyMs,
+        inputTokens: res.usage.promptTokens,
+        outputTokens: res.usage.completionTokens,
+        success: true,
+      });
+      return NextResponse.json({
+        id: res.id,
+        object: 'chat.completion',
+        created: Math.floor(Date.now() / 1000),
+        model: res.model,
+        choices: res.choices.map((c) => ({
+          index: c.index,
+          message: c.message,
+          finish_reason: c.finishReason ?? 'stop',
+        })),
+        usage: {
+          prompt_tokens: res.usage.promptTokens,
+          completion_tokens: res.usage.completionTokens,
+          total_tokens: res.usage.totalTokens,
+        },
+      });
+    } catch (err: any) {
+      await recordUsage({
+        userId: identity.userId,
+        apiKeyId: identity.apiKeyId,
+        subscriptionId,
+        modelId: payload.model,
+        endpoint: '/v1/chat/completions',
+        latencyMs: Date.now() - start,
+        inputTokens: payload.messages.reduce((a, m) => a + approxTokenCount(m.content), 0),
+        outputTokens: 0,
+        success: false,
+        errorCode: err?.code ?? 'upstream_error',
+      });
+      return NextResponse.json(
+        { error: { type: 'upstream_error', message: err?.message ?? 'Provider error' } },
+        { status: err?.status ?? 502 },
+      );
+    }
   }
 
+  const promptTokens = payload.messages.reduce((a, m) => a + approxTokenCount(m.content), 0);
+  let completionText = '';
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const encoder = new TextEncoder();
@@ -87,9 +132,11 @@ export async function POST(req: Request) {
       const send = (data: any) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
       };
+      let success = true;
       try {
-        for await (const chunk of provider.chatStream(req_)) {
+        for await (const chunk of provider.chatStream(chatReq)) {
           if (chunk.delta) {
+            completionText += chunk.delta;
             send({
               id,
               object: 'chat.completion.chunk',
@@ -117,8 +164,21 @@ export async function POST(req: Request) {
         }
         controller.enqueue(encoder.encode('data: [DONE]\n\n'));
         controller.close();
-      } catch (e) {
-        controller.error(e);
+      } catch (err: any) {
+        success = false;
+        controller.error(err);
+      } finally {
+        await recordUsage({
+          userId: identity.userId,
+          apiKeyId: identity.apiKeyId,
+          subscriptionId,
+          modelId: payload.model,
+          endpoint: '/v1/chat/completions',
+          latencyMs: Date.now() - start,
+          inputTokens: promptTokens,
+          outputTokens: approxTokenCount(completionText),
+          success,
+        });
       }
     },
   });

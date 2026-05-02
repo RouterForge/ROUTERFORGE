@@ -52,3 +52,7 @@ logs
 # IDE
 .vscode
 .idea
+
+# Reference / research files (kept locally, not committed)
+routerlab-pricing.jsx
+/reference/

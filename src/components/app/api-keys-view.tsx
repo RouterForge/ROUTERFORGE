@@ -17,65 +17,52 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-import { maskKey, formatDate, shortId } from '@/lib/utils';
+import { formatDate, maskKey } from '@/lib/utils';
+import type { ApiKeyListRow } from '@/services/api-keys';
 
-interface ApiKey {
-  id: string;
-  name: string;
-  prefix: string;
-  full?: string;
-  createdAt: string;
-  lastUsedAt: string | null;
-  revoked?: boolean;
+interface Props {
+  keys: ApiKeyListRow[];
 }
 
-const STORAGE_KEY = 'routerforge:apikeys:v1';
-
-export function ApiKeysView() {
+export function ApiKeysView({ keys }: Props) {
   const t = useTranslations('settings');
-  const [keys, setKeys] = React.useState<ApiKey[]>([]);
   const [name, setName] = React.useState('My app');
   const [open, setOpen] = React.useState(false);
-  const [created, setCreated] = React.useState<ApiKey | null>(null);
+  const [created, setCreated] = React.useState<{ full: string; name: string } | null>(null);
+  const [busy, setBusy] = React.useState(false);
 
-  React.useEffect(() => {
+  async function create() {
+    setBusy(true);
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setKeys(JSON.parse(raw));
-    } catch {
-      // ignore
+      const fd = new FormData();
+      fd.append('name', name.trim() || 'My app');
+      const res = await fetch('/api/keys/create', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.full) {
+        toast.error(data?.error ?? 'Could not create key');
+        return;
+      }
+      setCreated({ full: data.full, name: data.name });
+      setName('My app');
+      setOpen(false);
+    } finally {
+      setBusy(false);
     }
-  }, []);
-
-  React.useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(keys));
-    } catch {
-      // ignore
-    }
-  }, [keys]);
-
-  function create() {
-    const id = shortId();
-    const full = `rf_live_${shortId(28)}`;
-    const k: ApiKey = {
-      id,
-      name: name.trim() || 'My app',
-      prefix: full.slice(0, 12),
-      full,
-      createdAt: new Date().toISOString(),
-      lastUsedAt: null,
-    };
-    setKeys((prev) => [k, ...prev]);
-    setCreated(k);
-    setName('My app');
-    setOpen(false);
   }
 
-  function revoke(id: string) {
-    setKeys((prev) => prev.map((k) => (k.id === id ? { ...k, revoked: true } : k)));
+  async function revoke(id: string) {
+    if (!confirm('Revoke this API key? Apps using it will stop working immediately.')) return;
+    const fd = new FormData();
+    fd.append('id', id);
+    const res = await fetch('/api/keys/revoke', { method: 'POST', body: fd });
+    if (res.ok) {
+      toast.success('Key revoked');
+      // Refresh the server-rendered list
+      window.location.reload();
+    } else {
+      toast.error('Could not revoke');
+    }
   }
 
   return (
@@ -88,16 +75,14 @@ export function ApiKeysView() {
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant="gradient">
-              <Plus className="h-4 w-4" /> {t('newKey')}
-            </Button>
-          </DialogTrigger>
+          <Button variant="gradient" onClick={() => setOpen(true)}>
+            <Plus className="h-4 w-4" /> {t('newKey')}
+          </Button>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>{t('newKey')}</DialogTitle>
               <DialogDescription>
-                Give your key a memorable name. It will only be shown in full once.
+                Give your key a memorable name. The full secret is shown only once.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-2">
@@ -105,11 +90,11 @@ export function ApiKeysView() {
               <Input id="key-name" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>
+              <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>
                 Cancel
               </Button>
-              <Button variant="gradient" onClick={create}>
-                Create
+              <Button variant="gradient" onClick={create} disabled={busy}>
+                {busy ? '…' : 'Create'}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -129,13 +114,19 @@ export function ApiKeysView() {
             <Button
               variant="outline"
               onClick={() => {
-                navigator.clipboard.writeText(created.full!);
+                navigator.clipboard.writeText(created.full);
                 toast.success('Copied');
               }}
             >
               <Copy className="h-4 w-4" /> Copy
             </Button>
-            <Button variant="ghost" onClick={() => setCreated(null)}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setCreated(null);
+                window.location.reload();
+              }}
+            >
               Done
             </Button>
           </div>
@@ -168,8 +159,10 @@ export function ApiKeysView() {
                       {k.name}
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs">{maskKey(k.prefix + '...')}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{formatDate(k.createdAt)}</td>
+                  <td className="px-4 py-3 font-mono text-xs">{maskKey(k.prefix + '…')}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {formatDate(k.createdAt)}
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {k.lastUsedAt ? formatDate(k.lastUsedAt) : '—'}
                   </td>
@@ -183,7 +176,7 @@ export function ApiKeysView() {
                   <td className="px-4 py-3 text-end">
                     {!k.revoked && (
                       <Button variant="ghost" size="sm" onClick={() => revoke(k.id)}>
-                        <Trash2 className="h-4 w-4" /> {t('revoke')}
+                        <Trash2 className="h-4 w-4" /> Revoke
                       </Button>
                     )}
                   </td>

@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { ApiKeysView } from '@/components/app/api-keys-view';
+import { listApiKeysForCurrentUser } from '@/services/api-keys';
 
 export default async function ApiKeysPage({
   params,
@@ -8,5 +9,6 @@ export default async function ApiKeysPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <ApiKeysView />;
+  const keys = await listApiKeysForCurrentUser();
+  return <ApiKeysView keys={keys} />;
 }

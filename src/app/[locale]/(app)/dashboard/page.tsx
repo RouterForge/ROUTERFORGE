@@ -18,15 +18,9 @@ import { Link } from '@/i18n/navigation';
 import { StatCard } from '@/components/app/stat-card';
 import { UsageChart } from '@/components/app/usage-chart';
 import { ModelBarChart } from '@/components/app/model-bar-chart';
-import {
-  generateUsageSeries,
-  modelDistribution,
-  aggregateUsage,
-  estimateDirectCost,
-  generateActivity,
-} from '@/lib/usage';
+import { getDashboardData } from '@/services/dashboard';
 import { formatCurrency, formatNumber, formatDate } from '@/lib/utils';
-import { getSessionUser } from '@/lib/auth';
+import { requireUser } from '@/lib/auth';
 
 export default async function DashboardPage({
   params,
@@ -36,27 +30,12 @@ export default async function DashboardPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'dashboard' });
-  const tc = await getTranslations({ locale, namespace: 'common' });
 
-  const user = await getSessionUser().catch(() => null);
-  const series = generateUsageSeries(30);
-  const dist = modelDistribution();
-  const totals = aggregateUsage(series);
-  const directCost = estimateDirectCost(series);
+  const user = await requireUser();
+  const data = await getDashboardData(user.id);
+
   const planCost = 49;
-  const savings = Math.max(0, directCost - planCost);
-  const activity = generateActivity(8);
-
-  // Subscription mock
-  const endsAt = new Date();
-  endsAt.setDate(endsAt.getDate() + 18);
-  const startedAt = new Date();
-  startedAt.setDate(startedAt.getDate() - 12);
-  const totalDays = 30;
-  const usedDays = Math.floor(
-    (Date.now() - startedAt.getTime()) / 86400_000,
-  );
-  const pct = Math.min(100, Math.max(0, Math.round((usedDays / totalDays) * 100)));
+  const savings = Math.max(0, data.directCost - planCost);
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -66,7 +45,7 @@ export default async function DashboardPage({
             {t('title')}
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
-            {t('welcome', { name: user?.name ?? user?.email ?? 'there' })}
+            {t('welcome', { name: user.name ?? user.email })}
           </h1>
         </div>
         <div className="flex items-center gap-2">
@@ -84,6 +63,17 @@ export default async function DashboardPage({
         </div>
       </div>
 
+      {!data.hasRealData && (
+        <Card className="p-4 border-primary/30 bg-primary/5 text-sm">
+          <span className="font-medium text-primary">Sample data</span>
+          <span className="text-muted-foreground">
+            {' '}
+            — your account has no usage events yet. Create an API key in Settings, then hit{' '}
+            <code className="font-mono">/v1/chat/completions</code> to see real numbers here.
+          </span>
+        </Card>
+      )}
+
       {/* Subscription status */}
       <Card className="p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -91,23 +81,34 @@ export default async function DashboardPage({
             <div className="text-xs uppercase tracking-wider text-muted-foreground">
               {t('currentPlan')}
             </div>
-            <div className="mt-1 text-xl font-semibold">GPT / Codex · Monthly</div>
-            <div className="mt-1 text-sm text-muted-foreground">
-              {t('endsOn', { date: formatDate(endsAt, locale) })}
+            <div className="mt-1 text-xl font-semibold">
+              {data.subscription.planName}
+              {data.subscription.cycle !== '—' && ` · ${capitalize(data.subscription.cycle)}`}
             </div>
+            {data.subscription.endsAt ? (
+              <div className="mt-1 text-sm text-muted-foreground">
+                {t('endsOn', { date: formatDate(data.subscription.endsAt, locale) })}
+              </div>
+            ) : (
+              <div className="mt-1 text-sm text-muted-foreground">
+                No active subscription. Pick a plan to unlock the API.
+              </div>
+            )}
           </div>
           <div className="md:max-w-xs w-full">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{t('timeRemaining')}</span>
-              <span>{pct}%</span>
+              <span>{data.subscription.cycleProgressPct}%</span>
             </div>
-            <Progress value={pct} className="mt-2" />
+            <Progress value={data.subscription.cycleProgressPct} className="mt-2" />
             <div className="mt-3 flex gap-2 justify-end">
               <Button asChild size="sm" variant="outline">
                 <Link href="/billing">Manage</Link>
               </Button>
               <Button asChild size="sm" variant="gradient">
-                <Link href="/pricing">Upgrade</Link>
+                <Link href="/pricing">
+                  {data.subscription.status === 'NONE' ? 'Choose plan' : 'Upgrade'}
+                </Link>
               </Button>
             </div>
           </div>
@@ -118,22 +119,25 @@ export default async function DashboardPage({
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label={t('requests')}
-          value={formatNumber(totals.requests, locale)}
+          value={formatNumber(data.totals.requests, locale)}
           sub="last 30 days"
           icon={Activity}
           trend={{ value: '+8.4%', direction: 'up' }}
         />
         <StatCard
           label={t('tokens')}
-          value={formatNumber(totals.inputTokens + totals.outputTokens, locale)}
-          sub={`${formatNumber(totals.inputTokens, locale)} in / ${formatNumber(totals.outputTokens, locale)} out`}
+          value={formatNumber(data.totals.inputTokens + data.totals.outputTokens, locale)}
+          sub={`${formatNumber(data.totals.inputTokens, locale)} in / ${formatNumber(
+            data.totals.outputTokens,
+            locale,
+          )} out`}
           icon={Cpu}
           trend={{ value: '+5.1%', direction: 'up' }}
         />
         <StatCard
           label={t('rpm')}
-          value={`${totals.avgRPM} / min`}
-          sub={`avg RPD ${formatNumber(totals.avgRPD, locale)}`}
+          value={`${data.totals.avgRPM} / min`}
+          sub={`avg RPD ${formatNumber(data.totals.avgRPD, locale)}`}
           icon={KeyRound}
           trend={{ value: '−1.2%', direction: 'down' }}
         />
@@ -142,7 +146,10 @@ export default async function DashboardPage({
           value={formatCurrency(savings, 'USD', locale)}
           sub={t('savingsSubtitle')}
           icon={Coins}
-          trend={{ value: `vs ${formatCurrency(directCost, 'USD', locale)}`, direction: 'up' }}
+          trend={{
+            value: `vs ${formatCurrency(data.directCost, 'USD', locale)}`,
+            direction: 'up',
+          }}
         />
       </div>
 
@@ -153,13 +160,13 @@ export default async function DashboardPage({
             <div className="font-semibold">{t('requestsOverTime')}</div>
             <Badge variant="soft">last 30 days</Badge>
           </div>
-          <UsageChart data={series} />
+          <UsageChart data={data.series} />
         </Card>
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="font-semibold">{t('modelDistribution')}</div>
           </div>
-          <ModelBarChart data={dist} />
+          <ModelBarChart data={data.topModels} />
         </Card>
       </div>
 
@@ -173,19 +180,19 @@ export default async function DashboardPage({
           <div className="mt-2 rounded-lg border border-border/60 p-3 text-sm">
             <div className="flex items-center gap-2">
               <ArrowUp className="h-4 w-4 text-warning" />
-              <span className="font-medium">Spike detected on Tuesday</span>
+              <span className="font-medium">Spike detection</span>
             </div>
             <div className="mt-1 text-xs text-muted-foreground">
-              +120% requests vs. weekly baseline. Worth reviewing your traffic source.
+              We'll notify you if requests suddenly exceed 2× your baseline.
             </div>
           </div>
           <div className="mt-2 rounded-lg border border-border/60 p-3 text-sm">
             <div className="flex items-center gap-2">
               <ArrowDown className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">Latency improved 12%</span>
+              <span className="font-medium">Smart routing enabled</span>
             </div>
             <div className="mt-1 text-xs text-muted-foreground">
-              Smart routing kicked in across Gemini Flash.
+              Requests automatically fall back across providers on upstream errors.
             </div>
           </div>
         </Card>
@@ -193,9 +200,6 @@ export default async function DashboardPage({
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div className="font-semibold">{t('recentActivity')}</div>
-            <Button variant="ghost" size="sm">
-              {tc('all')}
-            </Button>
           </div>
           <div className="overflow-x-auto -mx-2">
             <table className="min-w-full text-sm">
@@ -210,14 +214,16 @@ export default async function DashboardPage({
                 </tr>
               </thead>
               <tbody>
-                {activity.map((row) => (
+                {data.activity.map((row) => (
                   <tr key={row.id} className="border-t border-border/60">
                     <td className="px-2 py-2 text-muted-foreground">
                       {new Date(row.ts).toLocaleTimeString(locale)}
                     </td>
                     <td className="px-2 py-2 font-medium">{row.model}</td>
                     <td className="px-2 py-2 text-muted-foreground">{row.endpoint}</td>
-                    <td className="px-2 py-2 tabular-nums">{formatNumber(row.tokens, locale)}</td>
+                    <td className="px-2 py-2 tabular-nums">
+                      {formatNumber(row.tokens, locale)}
+                    </td>
                     <td className="px-2 py-2 tabular-nums">{row.latencyMs} ms</td>
                     <td className="px-2 py-2">
                       <Badge variant={row.status === 'ok' ? 'success' : 'destructive'}>
@@ -233,4 +239,8 @@ export default async function DashboardPage({
       </div>
     </div>
   );
+}
+
+function capitalize(s: string) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
