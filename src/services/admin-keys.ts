@@ -23,7 +23,6 @@ export async function listActivationCodes(): Promise<ActivationCodeRow[]> {
       take: 200,
       include: { createdBy: { select: { email: true } } },
     });
-    if (rows.length === 0) return sampleRows();
     return rows.map((c) => ({
       code: c.code,
       planId: c.planId,
@@ -35,34 +34,16 @@ export async function listActivationCodes(): Promise<ActivationCodeRow[]> {
       issuedBy: c.createdBy?.email ?? null,
     }));
   } catch {
-    return sampleRows();
+    return [];
   }
 }
 
-function sampleRows(): ActivationCodeRow[] {
-  return Array.from({ length: 12 }).map((_, i) => ({
-    code: `RF-${(Math.random() * 1e9).toString(36).slice(0, 4).toUpperCase()}-${i
-      .toString()
-      .padStart(4, '0')}`,
-    planId: (['opensource', 'gpt', 'bundle'][i % 3]),
-    cycle: (['monthly', 'yearly'][i % 2]),
-    durationDays: [30, 365][i % 2],
-    redeemed: i % 3 === 0,
-    createdAt: new Date(Date.now() - i * 86400_000).toISOString(),
-    expiresAt: new Date(Date.now() + (i + 5) * 86400_000).toISOString(),
-    issuedBy: 'admin@routerforge.example',
-  }));
-}
-
 function randomCode() {
-  const a = Math.random().toString(36).slice(2, 6).toUpperCase();
-  const b = Math.random().toString(36).slice(2, 6).toUpperCase();
-  const c = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return `RF-${a}-${b}-${c}`;
+  const part = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `RF-${part()}-${part()}-${part()}`;
 }
 
 export async function createActivationCodes(formData: FormData) {
-  'use server';
   const admin = await requireAdmin().catch(() => null);
   if (!admin) return;
 
@@ -84,6 +65,14 @@ export async function createActivationCodes(formData: FormData) {
 
   try {
     await db.activationCode.createMany({ data: items });
+    await db.adminAuditLog.create({
+      data: {
+        actorId: admin.id,
+        action: 'admin.code.generate',
+        targetType: 'ActivationCode',
+        metadata: JSON.stringify({ planId, cycle, durationDays, quantity }),
+      },
+    });
   } catch {
     // ignore in dev — DB may not be pushed yet
   }

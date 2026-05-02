@@ -17,7 +17,7 @@ export async function listAdminPayments(): Promise<AdminPaymentRow[]> {
       take: 50,
       include: { user: { select: { email: true } } },
     });
-    if (rows.length === 0) return sampleRows();
+    if (rows.length === 0) return [];
     return rows.map((p) => ({
       id: p.id,
       userEmail: p.user.email,
@@ -27,19 +27,6 @@ export async function listAdminPayments(): Promise<AdminPaymentRow[]> {
       createdAt: p.createdAt.toISOString(),
     }));
   } catch {
-    return sampleRows();
+    return [];
   }
-}
-
-function sampleRows(): AdminPaymentRow[] {
-  return Array.from({ length: 14 }).map((_, i) => ({
-    id: `pay_${(8400 + i).toString(36)}`,
-    userEmail: `user${i + 1}@routerforge.example`,
-    provider: (['POLAR', 'BINANCE', 'BYBIT', 'CRYPTO'] as const)[i % 4],
-    amount: [19, 39, 49, 119, 8][i % 5],
-    status: (['SUCCEEDED', 'SUCCEEDED', 'PENDING', 'MANUAL_REVIEW', 'FAILED'][
-      i % 5
-    ]) as AdminPaymentRow['status'],
-    createdAt: new Date(Date.now() - i * 600_000).toISOString(),
-  }));
 }

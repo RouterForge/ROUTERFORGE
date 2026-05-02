@@ -36,7 +36,7 @@ export async function listAdminUsers(query: string): Promise<AdminUserRow[]> {
       },
     });
 
-    if (users.length === 0) return sampleRows();
+    if (users.length === 0) return [];
 
     const since = new Date(Date.now() - 30 * 86400_000);
     const usage = await db.usageEvent.groupBy({
@@ -56,21 +56,6 @@ export async function listAdminUsers(query: string): Promise<AdminUserRow[]> {
       createdAt: u.createdAt.toISOString(),
     }));
   } catch {
-    return sampleRows();
+    return [];
   }
-}
-
-function sampleRows(): AdminUserRow[] {
-  return Array.from({ length: 16 }).map((_, i) => {
-    const roles: AdminUserRow['role'][] = ['USER', 'USER', 'USER', 'USER', 'ADMIN'];
-    return {
-      id: `usr_${(1000 + i).toString(36)}`,
-      email: i === 0 ? 'admin@routerforge.example' : `user${i + 1}@routerforge.example`,
-      role: i === 0 ? 'SUPER_ADMIN' : roles[i % roles.length],
-      plan: ['Open Source', 'Gemini', 'GPT / Codex', 'Claude', 'Bundle'][i % 5],
-      status: ['ACTIVE', 'ACTIVE', 'EXPIRED', 'ACTIVE', 'PAUSED'][i % 5] as AdminUserRow['status'],
-      requests30d: 200 + ((i * 299) % 4000),
-      createdAt: new Date(Date.now() - i * 86400_000).toISOString(),
-    };
-  });
 }

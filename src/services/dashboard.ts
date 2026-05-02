@@ -3,9 +3,6 @@ import { db } from '@/lib/db';
 import {
   aggregateUsage,
   estimateDirectCost,
-  generateActivity,
-  generateUsageSeries,
-  modelDistribution,
   type SeriesPoint,
 } from '@/lib/usage';
 import { MODELS } from '@/lib/models';
@@ -79,22 +76,22 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
   ]);
 
   const hasRealData = events.length > 0;
-  const series = hasRealData ? bucketDaily(events) : generateUsageSeries(30, 7);
-  const topModels = hasRealData ? topModelsFromEvents(events) : modelDistribution(11);
+  // Always read from real data. Empty buckets render an empty chart, which is
+  // honest. We no longer synthesize requests just so the chart "looks busy".
+  const series = bucketDaily(events);
+  const topModels = topModelsFromEvents(events);
   const agg = aggregateUsage(series);
   const directCost = estimateDirectCost(series);
 
-  const activityRows = activity.length
-    ? activity.map((e) => ({
-        id: e.id,
-        ts: e.createdAt.toISOString(),
-        model: MODELS.find((m) => m.id === e.modelId)?.label ?? e.modelId,
-        endpoint: e.endpoint,
-        tokens: e.inputTokens + e.outputTokens,
-        latencyMs: e.latencyMs,
-        status: (e.success ? 'ok' : 'fail') as 'ok' | 'fail',
-      }))
-    : generateActivity(12, 17);
+  const activityRows = activity.map((e) => ({
+    id: e.id,
+    ts: e.createdAt.toISOString(),
+    model: MODELS.find((m) => m.id === e.modelId)?.label ?? e.modelId,
+    endpoint: e.endpoint,
+    tokens: e.inputTokens + e.outputTokens,
+    latencyMs: e.latencyMs,
+    status: (e.success ? 'ok' : 'fail') as 'ok' | 'fail',
+  }));
 
   const subscription = deriveSubscriptionDisplay(sub);
 

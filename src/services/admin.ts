@@ -10,9 +10,6 @@ import { db } from '@/lib/db';
 import {
   aggregateUsage,
   estimateDirectCost,
-  generateActivity,
-  generateUsageSeries,
-  modelDistribution,
   type SeriesPoint,
 } from '@/lib/usage';
 import { MODELS } from '@/lib/models';
@@ -140,44 +137,22 @@ export async function getAdminOverview(): Promise<AdminOverview> {
       cliproxyAdmin.getProviderHealth().catch(() => fallbackProviders()),
     ]);
 
-  const hasRealUsage = usageRows.length > 0;
-  let series: SeriesPoint[];
-  let topModels: AdminOverview['topModels'];
-  if (hasRealUsage) {
-    series = bucketDaily(usageRows);
-    topModels = topModelsFromEvents(usageRows);
-  } else {
-    series = generateUsageSeries(30, 17);
-    topModels = modelDistribution(13);
-  }
+  // Real data only. We no longer synthesize traffic, suspicious users, or MRR.
+  const series = bucketDaily(usageRows);
+  const topModels = topModelsFromEvents(usageRows);
   const agg = aggregateUsage(series);
   const directCost = estimateDirectCost(series);
 
-  const hasRealEvents = recentEvents.length > 0;
-  const filledRecentEvents: AdminOverview['recentEvents'] = hasRealEvents
-    ? recentEvents
-    : generateActivity(8, 19).map((r, i) => ({
-        id: r.id,
-        createdAt: r.ts,
-        userId: `usr_${2000 + i}`,
-        userEmail: null,
-        modelId: r.model,
-        inputTokens: Math.round(r.tokens * 0.6),
-        outputTokens: Math.round(r.tokens * 0.4),
-        latencyMs: r.latencyMs,
-        success: r.status === 'ok',
-      }));
-
   const retentionPct =
-    subTotals.all > 0 ? Math.round((subTotals.active / subTotals.all) * 100) : 92;
+    subTotals.all > 0 ? Math.round((subTotals.active / subTotals.all) * 100) : 0;
 
   return {
     totals: {
-      users: userTotals.total || 2_418,
-      newUsers30d: userTotals.newUsers || 126,
-      activeSubs: subTotals.active || 1_392,
+      users: userTotals.total,
+      newUsers30d: userTotals.newUsers,
+      activeSubs: subTotals.active,
       retentionPct,
-      mrr: revenue || 48_290,
+      mrr: revenue,
     },
     usage: {
       requests: agg.requests,
@@ -191,7 +166,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
     series,
     topModels,
     suspicious,
-    recentEvents: filledRecentEvents,
+    recentEvents,
     providers,
   };
 }
