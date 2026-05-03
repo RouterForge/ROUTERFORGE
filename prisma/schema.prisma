@@ -1,13 +1,22 @@
 // RouterForge database schema
-// Uses SQLite for local dev; swap `provider` to `postgresql` or `mysql` in
-// production and migrate enum-valued fields back to real enums.
+//
+// Production uses PostgreSQL (Vercel's serverless runtime has a read-only
+// filesystem, so SQLite cannot be used there). Local dev also uses Postgres
+// so the schema behaves identically in every environment.
+//
+// Recommended providers: Neon, Vercel Postgres, Supabase (all have free
+// tiers and work great with Vercel + Prisma). For serverless hosts remember
+// to add `?pgbouncer=true&connection_limit=1` to DATABASE_URL.
+//
+// Enum-valued fields are kept as String to stay portable across providers
+// and to avoid migrating existing data when switching hosts.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
